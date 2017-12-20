@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+
+    android:weightSum="1"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.kozlik.tmf.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+
+    <EditText
+        android:id="@+id/Eamount"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:hint="Amount"
+        android:inputType="number|numberSigned"
+        android:layout_above="@+id/koment"
+        android:layout_alignRight="@+id/koment"
+        android:layout_alignEnd="@+id/koment"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignStart="@+id/button2" />
+
+    <EditText
+        android:id="@+id/koment"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:hint="Komentář"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_above="@+id/transactions"
+        android:layout_alignRight="@+id/button"
+        android:layout_alignEnd="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+    <Button
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:text="Odeslat"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/exampleB"
+        android:layout_centerHorizontal="true" />
+
+    <Spinner
+
+
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_above="@+id/koment"
+        android:layout_alignLeft="@+id/koment"
+        android:layout_alignStart="@+id/koment"
+        android:layout_toStartOf="@+id/Eamount"
+        android:layout_toLeftOf="@+id/Eamount" />
+
+     <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        android:layout_above="@+id/koment"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/transactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Transactions"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/koment"
+        android:layout_alignStart="@+id/koment" />
+
+    <Button
+
+        android:id="@+id/exampleB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ExampleB"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:text="Přidat akci"
+        android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button"
+        android:layout_alignRight="@+id/button"
+        android:layout_alignEnd="@+id/button" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="1973,-"
+        android:textSize="75dp"
+        android:id="@+id/textView2"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_toLeftOf="@+id/button"
+        android:layout_alignLeft="@+id/spinner"
+        android:layout_alignStart="@+id/spinner"
+        android:layout_alignParentTop="true" />
+
+    <ListView
+        android:windowSoftInputMode="adjustPan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/transactions"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/exampleB" />
+
+    <Button
+        android:id="@+id/bt_akce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView"
+        android:layout_alignEnd="@+id/button2"
+        android:layout_alignRight="@+id/button2"
+        android:layout_toRightOf="@+id/transactions"
+        android:text="Akce" />
+    <!--
+     <RadioButton
+
+         android:id="@+id/radioButton2"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+
+         android:layout_weight="2.58"
+         android:text="-"
+         android:layout_above="@+id/spinner"
+         android:layout_toLeftOf="@+id/button"
+         android:layout_toStartOf="@+id/button" />
+
+     <RadioButton
+
+         android:id="@+id/radioButton"
+         android:layout_width="86dp"
+         android:layout_height="56dp"
+
+         android:layout_weight="1.5"
+         android:text="+"
+         android:layout_alignParentTop="true"
+         android:layout_toRightOf="@+id/spinner"
+         android:layout_toEndOf="@+id/spinner" />
+ -->
+
+</RelativeLayout>

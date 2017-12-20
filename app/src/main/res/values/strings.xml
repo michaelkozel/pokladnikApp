@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TMF</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_view_transactions">ViewTransactions</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_akce">ActivityAkce</string>
+    <string name="title_activity_akce_aktivity2">AkceAktivity2</string>
+    <string name="title_activity_seznam">SeznamActivity</string>
+</resources>

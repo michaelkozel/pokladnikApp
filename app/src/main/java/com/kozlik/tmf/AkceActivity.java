@@ -33,10 +33,13 @@ public class AkceActivity extends AppCompatActivity {
     ListView lv_akce;
     TextView tv_Akce;
     static String nazevTabulky = "";
+    static String titleAkceZobrazen = "";
     static ArrayList<String> jmena;
     static ArrayList<Integer> zaplaceno;
     static String TAG = AkceActivity.class.getSimpleName();
     String getUsersForActionURL = "http://tmf-u12.hys.cz/AndroidAppRequests/getUsersForAction.php";
+    String deleteEventURL = "http://tmf-u12.hys.cz/AndroidAppRequests/deleteEvent.php";
+    final String adresaGetJSON = "http://tmf-u12.hys.cz/AndroidAppRequests/GetJsonEvents.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,43 +63,120 @@ public class AkceActivity extends AppCompatActivity {
         lv_akce.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AsyncHttpClient client = new AsyncHttpClient();
-                nazevTabulky = MainActivity.idAkceList.get(i);
-                Log.d(TAG, nazevTabulky);
-                Toast.makeText(getApplication(), nazevTabulky, Toast.LENGTH_SHORT).show();
-                RequestParams params = new RequestParams("titulek", nazevTabulky);
-                client.post(getUsersForActionURL, params, new TextHttpResponseHandler() {
-
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                     Toast.makeText(getApplicationContext(),"Problém s načtením uživatelů",Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        String parsed = parseTextToJSON(responseString);
-                        parseJSON(parsed);
-
-                    }
-                });
-
+                aktualizovatList(i);
+            }
+        });
+        lv_akce.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                smazatEvent(i); //i je pozice v seznamu
+                return false;
             }
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+    }
+
+    private void smazatEvent(int i) {
+        //todo dialog
+        AsyncHttpClient client = new AsyncHttpClient();
+        nazevTabulky = MainActivity.idAkceList.get(i);
+        Log.d("smazatEvent", nazevTabulky);
+        RequestParams params = new RequestParams("id", nazevTabulky);
+        client.post(deleteEventURL, params, new TextHttpResponseHandler() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(getApplicationContext(), "Problém se smazáním akce", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Toast.makeText(getApplicationContext(), "Success akce smazána", Toast.LENGTH_SHORT).show();
+                aktualizujSeznam();
             }
         });
     }
 
-    private void parseJSON(String parsedJSONString) {
+    private void aktualizujSeznam() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(adresaGetJSON, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
 
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+
+                String parsedJSONString = parseTextToJSON(s);
+                parseJSONAkce(parsedJSONString);
+
+            }
+
+
+        });
+    }
+
+    void aktualizovatList(int position) {
+        int i = position;
+        AsyncHttpClient client = new AsyncHttpClient();
+        nazevTabulky = MainActivity.idAkceList.get(i);
+        titleAkceZobrazen = MainActivity.akceList.get(i);
+        Log.d("nazevTabulky", nazevTabulky);
+        Toast.makeText(getApplication(), nazevTabulky, Toast.LENGTH_SHORT).show();
+        RequestParams params = new RequestParams("titulek", nazevTabulky);
+        client.post(getUsersForActionURL, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(getApplicationContext(), "Problém s načtením uživatelů", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                String parsed = parseTextToJSON(responseString);
+                parseJSON(parsed);
+
+            }
+        });
+
+    }
+
+    private void parseJSONAkce(String parsedJSONString) {
+
+        String textInTextview = "";
+        try {
+            JSONObject jsonObj = new JSONObject(parsedJSONString);
+            JSONArray akce = jsonObj.getJSONArray("Akce");
+            for (int i = 0; i < akce.length(); i++) {
+                JSONObject c = akce.getJSONObject(i);
+
+                String datum = c.getString("datum");
+                String popis = c.getString("popis");
+                String cena = c.getString("cena");
+                String titulek = c.getString("titulek");
+                String id = c.getString("id");
+                String poleDatum[] = datum.split("-");
+
+                MainActivity.akceList.add(poleDatum[2] + " ." + poleDatum[1] + " ." + poleDatum[0] + " " + popis + " " + cena);
+                Log.d("titulekmainactivity", id);
+                MainActivity.idAkceList.add(id);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Intent i = new Intent(this, AkceActivity.class);
+        i.putStringArrayListExtra("test", (ArrayList<String>) MainActivity.akceList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.row_akce, R.id.rowAkce, MainActivity.akceList);
+        lv_akce.setAdapter(adapter);
+
+    }
+
+    private void parseJSON(String parsedJSONString) {
         try {
             JSONObject jsonObj = new JSONObject(parsedJSONString);
             JSONArray UsersForAction = jsonObj.getJSONArray("UsersForAction");
@@ -104,6 +184,9 @@ public class AkceActivity extends AppCompatActivity {
             zaplaceno = new ArrayList<Integer>();
             for (int i = 0; i < UsersForAction.length(); i++) {
                 JSONObject c = UsersForAction.getJSONObject(i);
+                if (c.getString("Name").equals("Pokladna")) {
+                    continue;
+                }
                 jmena.add(c.getString("Name") + " " + c.getString("Surname"));
                 int zaplatil = c.getInt("Zaplaceno");
                 switch (zaplatil) {
@@ -135,6 +218,7 @@ public class AkceActivity extends AppCompatActivity {
     private void spustitAktivituSeznamu() {
         Intent i = new Intent(this, SeznamActivity.class);
         i.putExtra("nazevTabulky", nazevTabulky);
+        i.putExtra("titleAkceZobrazen", titleAkceZobrazen);
         startActivity(i);
     }
 

@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     invhelper customadapter;
     public static Boolean onlyaktualizovat;
     public static Boolean json_done;
-    int pocet_uzivatelu = 26;
     String pAmount = ""; //kolik je v pokladně
     TextView tpAmount;
     Button addEvent;
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         onlyaktualizovat = false;
-
         super.onCreate(savedInstanceState);
         new GetJson().execute();
         setContentView(R.layout.activity_main);
@@ -345,6 +343,10 @@ public class MainActivity extends AppCompatActivity {
         */
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     private void parseJSON(String parsedJSONString) {
         String textInTextview = "";
@@ -503,7 +505,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Načítám data", Toast.LENGTH_SHORT).show();
 
             pjmeno = new String[]{"Ahoj"};
-
             pbalance = new String[]{"5"};
         }
 

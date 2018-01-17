@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by vlooak on 12.8.15.
- */
+
 public class invhelper extends ArrayAdapter<String> {
 
     private final Activity context;

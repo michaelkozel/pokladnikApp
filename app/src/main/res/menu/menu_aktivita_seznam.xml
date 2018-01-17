@@ -3,9 +3,6 @@
 
 
     <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_setUsersForPayment"
-        android:title="Pridat uživatele platby"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_menu_share"/>
+
 
 </menu>

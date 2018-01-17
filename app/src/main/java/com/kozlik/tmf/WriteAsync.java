@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.kozlik.tmf.MainActivity;
 
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,85 +29,72 @@ import java.util.List;
  * Created by michael on 8. 6. 2016.
  */
 public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
-public static String suma="";
-    public static String name="";
-    public static String amount="";
-    public static String Koment="";
-    public static String kod="";
-String text;
+    public static String suma = "";
+    public static String name = "";
+    public static String amount = "";
+    public static String Koment = "";
+    public static String kod = "";
+    String text;
 
-    protected void onPreExecute(){
-
+    protected void onPreExecute() {
 
 
     }
+
     @Override
-    protected Boolean doInBackground(Void... params) {try
-    {
+    protected Boolean doInBackground(Void... params) {
+        try {
 
-        if(MainActivity.onlyaktualizovat) {
-            kod = ShowTransactions();
+            if (MainActivity.onlyaktualizovat) {
+                kod = ShowTransactions();
+            } else {
+
+
+                updatePOST();
+                kod = ShowTransactions();
+            }
+
+
+            return true;
+        } catch (Exception e) {
+
+            System.out.println("CHYBA před ");
+            return false;
         }
-        else {
-
-
-            updatePOST();
-            kod = ShowTransactions();
-        }
-
-
-return true;
-    }catch (Exception e){
-
-System.out.println("CHYBA před ");
-return false;
-    }
 
 
     }
-
-
-
-
-
 
 
     protected void onPostExecute(Boolean result) {
 
 
-
-
     }
 
 
-
-    public  void  updatePOST()  throws UnsupportedEncodingException
-    {
+    public void updatePOST() throws UnsupportedEncodingException {
 
 
         text = "";
         // Create data variable for sent values to server
 
         String data = "namePost"
-                + "=" + name ;
+                + "=" + name;
 
         data += "&" + "amountPost" + "="
                 + amount;
 
         data += "&" + "sumPost"
-                + "=" + suma  ;
+                + "=" + suma;
 
         data += "&" + "commentPost"
-                + "="+Koment;
+                + "=" + Koment;
 
 
-
-
-        BufferedReader reader=null;
+        BufferedReader reader = null;
 
         // Send data
-        try
-        {
+        try {
 
             // Defined URL  where to send data
             URL url = new URL("http://tmf-u12.hys.cz/AndroidAppRequests/NewTransaction.php");
@@ -118,9 +104,8 @@ return false;
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write( data );
+            wr.write(data);
             wr.flush();
-
 
 
             reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -128,51 +113,40 @@ return false;
             String line = null;
 
             // Read Server Response
-            while((line = reader.readLine()) != null)
-            {
+            while ((line = reader.readLine()) != null) {
                 // Append server response in string
                 sb.append(line + "\n");
             }
 
 
             text = sb.toString();
-System.out.print("odezva"+text);
-        }
-        catch(Exception ex)
-        {
+            System.out.print("odezva" + text);
+        } catch (Exception ex) {
             System.out.println("spadlo to");
 
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
 
                 reader.close();
-            }
-
-            catch(Exception ex) {
+            } catch (Exception ex) {
 
                 System.out.println("spadlo to");
 
             }
         }
 
-name="";
-        amount="";
-        suma="";
-        Koment="";
-
-
+        name = "";
+        amount = "";
+        suma = "";
+        Koment = "";
 
 
     }
 
 
-    public String ShowTransactions()
-    {
+    public String ShowTransactions() {
 
-String source = "";
+        String source = "";
         URL url = null;
         try {
             url = new URL("http://tmf-u12.hys.cz/ShowData.php");
@@ -199,11 +173,6 @@ String source = "";
             e.printStackTrace();
             return null;
         }
-
-        // Send POST data request
-
-
-
 
 
     }

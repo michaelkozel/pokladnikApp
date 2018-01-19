@@ -52,7 +52,7 @@ public class SeznamActivity extends AppCompatActivity {
      * id mysql tabulky do ktere se odesilaji data
      */
     String id = "";
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,8 +105,8 @@ public class SeznamActivity extends AppCompatActivity {
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
-                        String name = et_dialogAddUser_name.getText().toString();
-                        String surname = et_dialogAddUser_surname.getText().toString();
+                        final String name = et_dialogAddUser_name.getText().toString();
+                        final String surname = et_dialogAddUser_surname.getText().toString();
                         RequestParams params = new RequestParams();
                         params.put("name", name);
                         params.put("surname", surname);
@@ -136,7 +136,7 @@ public class SeznamActivity extends AppCompatActivity {
     private void updateList() {
         AsyncHttpClient client = new AsyncHttpClient();
         Log.d("nazevTabulky", id);
-        Toast.makeText(getApplication(), id, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplication(), id, Toast.LENGTH_SHORT).show();
         RequestParams params = new RequestParams("titulek", id);
         client.post(getUsersForActionURL, params, new TextHttpResponseHandler() {
             @Override
@@ -215,12 +215,12 @@ public class SeznamActivity extends AppCompatActivity {
         client.post(SeznamActivity.this, URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(SeznamActivity.this, "Fail " + statusCode, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SeznamActivity.this, "Nepovedlo se zapsat", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-               // Toast.makeText(SeznamActivity.this, "Success " + statusCode, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SeznamActivity.this, "Úspěšně zapsáno ", Toast.LENGTH_SHORT).show();
                 Log.d("RESPONSE po backpressu", responseString);
             }
         });

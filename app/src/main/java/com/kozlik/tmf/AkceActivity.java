@@ -1,9 +1,11 @@
 package com.kozlik.tmf;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,11 +32,21 @@ import cz.msebera.android.httpclient.Header;
  * Aktivita seznamu akci
  */
 public class AkceActivity extends AppCompatActivity {
+    /**
+     * Základní adapter pro listview
+     */
+    ArrayAdapter<String> adapter;
     ListView lv_akce;
     TextView tv_Akce;
     static String nazevTabulky = "";
     static String titleAkceZobrazen = "";
+    /**
+     * Arraylist s celymi jmeny lidi
+     */
     static ArrayList<String> jmena;
+    /**
+     * Arraylist s daty o zaplacení seřazenými stejně jako arraylist s lidmi
+     */
     static ArrayList<Integer> zaplaceno;
     static String TAG = AkceActivity.class.getSimpleName();
     String getUsersForActionURL = "http://tmf-u12.hys.cz/AndroidAppRequests/getUsersForAction.php";
@@ -51,12 +63,12 @@ public class AkceActivity extends AppCompatActivity {
         tv_Akce = (TextView) findViewById(R.id.tv_Akce);
         lv_akce = (ListView) findViewById(R.id.lv_akce);
         Intent i = this.getIntent();
-        if (MainActivity.akceList == null) {
+        if (MainActivity.akceList.size() == 0) {
             lv_akce.setVisibility(View.INVISIBLE);
             tv_Akce.setText("Žádná akce");
         } else {
             tv_Akce.setText("Akce:");
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+            adapter = new ArrayAdapter<String>(this,
                     R.layout.row_akce, R.id.rowAkce, MainActivity.akceList);
             lv_akce.setAdapter(adapter);
         }
@@ -70,32 +82,60 @@ public class AkceActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 smazatEvent(i); //i je pozice v seznamu
-                return false;
+                return true;
             }
         });
-
 
 
     }
 
-    private void smazatEvent(int i) {
-        //todo dialog
-        AsyncHttpClient client = new AsyncHttpClient();
-        nazevTabulky = MainActivity.idAkceList.get(i);
-        Log.d("smazatEvent", nazevTabulky);
-        RequestParams params = new RequestParams("id", nazevTabulky);
-        client.post(deleteEventURL, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(getApplicationContext(), "Problém se smazáním akce", Toast.LENGTH_SHORT).show();
-            }
+    private void smazatEvent(final int i) {
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Toast.makeText(getApplicationContext(), "Success akce smazána", Toast.LENGTH_SHORT).show();
-                aktualizujSeznam();
-            }
-        });
+        AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("Odstranit akci");
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Opravdu chcete odstranit akci?")
+                .setCancelable(false)
+                .setPositiveButton("Ano", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        nazevTabulky = MainActivity.idAkceList.get(i);
+                        Log.d("smazatEvent", nazevTabulky);
+                        RequestParams params = new RequestParams("id", nazevTabulky);
+                        client.post(deleteEventURL, params, new TextHttpResponseHandler() {
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                Toast.makeText(getApplicationContext(), "Problém se smazáním akce", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                                Toast.makeText(getApplicationContext(), "Success akce smazána", Toast.LENGTH_SHORT).show();
+                                Log.d("deleteResponse",responseString);
+                                aktualizujSeznam();
+                            }
+                        });
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Ne", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(), "Odstranění akce zrušeno", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
     }
 
     private void aktualizujSeznam() {
@@ -114,7 +154,6 @@ public class AkceActivity extends AppCompatActivity {
 
             }
 
-
         });
     }
 
@@ -124,7 +163,7 @@ public class AkceActivity extends AppCompatActivity {
         nazevTabulky = MainActivity.idAkceList.get(i);
         titleAkceZobrazen = MainActivity.akceList.get(i);
         Log.d("nazevTabulky", nazevTabulky);
-        Toast.makeText(getApplication(), nazevTabulky, Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getApplication(), nazevTabulky, Toast.LENGTH_SHORT).show();
         RequestParams params = new RequestParams("titulek", nazevTabulky);
         client.post(getUsersForActionURL, params, new TextHttpResponseHandler() {
             @Override
@@ -143,7 +182,8 @@ public class AkceActivity extends AppCompatActivity {
     }
 
     private void parseJSONAkce(String parsedJSONString) {
-
+        MainActivity.akceList.clear();
+        MainActivity.idAkceList.clear();
         String textInTextview = "";
         try {
             JSONObject jsonObj = new JSONObject(parsedJSONString);
@@ -159,7 +199,7 @@ public class AkceActivity extends AppCompatActivity {
                 String poleDatum[] = datum.split("-");
 
                 MainActivity.akceList.add(poleDatum[2] + " ." + poleDatum[1] + " ." + poleDatum[0] + " " + popis + " " + cena);
-                Log.d("titulekmainactivity", id);
+                Log.d("titulekakceactivity", id);
                 MainActivity.idAkceList.add(id);
             }
 
@@ -168,11 +208,7 @@ public class AkceActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Intent i = new Intent(this, AkceActivity.class);
-        i.putStringArrayListExtra("test", (ArrayList<String>) MainActivity.akceList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.row_akce, R.id.rowAkce, MainActivity.akceList);
-        lv_akce.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -184,9 +220,6 @@ public class AkceActivity extends AppCompatActivity {
             zaplaceno = new ArrayList<Integer>();
             for (int i = 0; i < UsersForAction.length(); i++) {
                 JSONObject c = UsersForAction.getJSONObject(i);
-                if (c.getString("Name").equals("Pokladna")) {
-                    continue;
-                }
                 jmena.add(c.getString("Name") + " " + c.getString("Surname"));
                 int zaplatil = c.getInt("Zaplaceno");
                 switch (zaplatil) {
@@ -203,8 +236,6 @@ public class AkceActivity extends AppCompatActivity {
                         zaplaceno.add(3);
                         break;
                 }
-
-
             }
             spustitAktivituSeznamu();
 

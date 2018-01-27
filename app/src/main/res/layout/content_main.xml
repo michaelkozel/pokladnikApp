@@ -4,165 +4,136 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginLeft="30dp"
     android:orientation="horizontal"
-
     android:weightSum="1"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.kozlik.tmf.MainActivity"
+    tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/activity_main">
 
-
-    <EditText
-        android:id="@+id/Eamount"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:hint="Amount"
-        android:inputType="number|numberSigned"
-        android:layout_above="@+id/koment"
-        android:layout_alignRight="@+id/koment"
-        android:layout_alignEnd="@+id/koment"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignStart="@+id/button2" />
-
-    <EditText
-        android:id="@+id/koment"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:hint="Komentář"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_above="@+id/transactions"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-
-    <Button
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:text="Odeslat"
+        android:layout_alignLeft="@+id/tv_prispevek"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/exampleB"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/tv_prispevek"
+        android:layout_marginTop="30dp"
+        android:text="Částka v pokladně"
+        app:layout_constraintHorizontal_bias="0.24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-
-
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_above="@+id/koment"
-        android:layout_alignLeft="@+id/koment"
-        android:layout_alignStart="@+id/koment"
-        android:layout_toStartOf="@+id/Eamount"
-        android:layout_toLeftOf="@+id/Eamount" />
-
-     <RadioGroup
-        android:id="@+id/radiogroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-
-        android:layout_above="@+id/koment"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="154dp"
+        android:layout_height="73dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:orientation="horizontal">
+        android:layout_below="@+id/textView5"
 
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/transactions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Transactions"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/koment"
-        android:layout_alignStart="@+id/koment" />
-
-    <Button
-
-        android:id="@+id/exampleB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ExampleB"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:text=""
+        android:textSize="50dp" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:text="Přidat akci"
-        android:layout_below="@+id/button"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="1973,-"
-        android:textSize="75dp"
-        android:id="@+id/textView2"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_alignBottom="@+id/button2"
-        android:layout_toLeftOf="@+id/button"
-        android:layout_alignLeft="@+id/spinner"
-        android:layout_alignStart="@+id/spinner"
-        android:layout_alignParentTop="true" />
-
-    <ListView
-        android:windowSoftInputMode="adjustPan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_below="@+id/transactions"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/exampleB" />
+        android:layout_width="150dp"
+        android:layout_height="47dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView5"
+        android:text="Přidat akci" />
 
     <Button
         android:id="@+id/bt_akce"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/listView"
-        android:layout_alignEnd="@+id/button2"
-        android:layout_alignRight="@+id/button2"
-        android:layout_toRightOf="@+id/transactions"
-        android:text="Akce" />
-    <!--
-     <RadioButton
+        android:layout_width="150dp"
+        android:layout_height="47dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button2"
+        android:text="Akce"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
-         android:id="@+id/radioButton2"
-         android:layout_width="wrap_content"
-         android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/tv_prispevek"
+        android:layout_width="235dp"
+        android:layout_height="34dp"
+        android:layout_above="@+id/spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="19dp"
+        android:layout_marginStart="19dp"
+        android:text="Přispět do pokladny"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-         android:layout_weight="2.58"
-         android:text="-"
-         android:layout_above="@+id/spinner"
-         android:layout_toLeftOf="@+id/button"
-         android:layout_toStartOf="@+id/button" />
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="182dp"
+        android:layout_height="57dp"
+        android:layout_above="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_prispevek" />
 
-     <RadioButton
+    <EditText
+        android:id="@+id/Eamount"
+        android:layout_width="130dp"
+        android:layout_height="57dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/spinner"
+        android:hint="Amount"
+        android:inputType="number|numberSigned" />
 
-         android:id="@+id/radioButton"
-         android:layout_width="86dp"
-         android:layout_height="56dp"
 
-         android:layout_weight="1.5"
-         android:text="+"
-         android:layout_alignParentTop="true"
-         android:layout_toRightOf="@+id/spinner"
-         android:layout_toEndOf="@+id/spinner" />
- -->
+    <EditText
+        android:id="@+id/koment"
+        android:layout_width="182dp"
+        android:layout_height="41dp"
+        android:layout_alignBottom="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="Komentář"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="150dp"
+        android:layout_height="47dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="left|center_vertical"
+        android:layout_toEndOf="@+id/koment"
+        android:layout_toRightOf="@+id/koment"
+        android:text="Odeslat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="342dp"
+        android:layout_height="207dp"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="11dp"
+        android:windowSoftInputMode="adjustPan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/koment" />
+
 
 </RelativeLayout>

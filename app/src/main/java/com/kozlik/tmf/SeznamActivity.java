@@ -66,13 +66,7 @@ public class SeznamActivity extends AppCompatActivity {
         seznamAkci.setAdapter(customAdapter);
         id = getIntent().getStringExtra("nazevTabulky");
         Window window = this.getWindow();
-        fab_addUser = (FloatingActionButton) findViewById(R.id.fab_addUser);
-        fab_addUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addUserOnlyForThisEvent();
-            }
-        });
+
 
 // barva status baru
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -169,6 +163,7 @@ public class SeznamActivity extends AppCompatActivity {
             JSONArray UsersForAction = jsonObj.getJSONArray("UsersForAction");
             AkceActivity.jmena = new ArrayList<String>();
             AkceActivity.zaplaceno = new ArrayList<Integer>();
+            Log.d("delka jmen", "" + UsersForAction.length());
             for (int i = 0; i < UsersForAction.length(); i++) {
                 JSONObject c = UsersForAction.getJSONObject(i);
                 AkceActivity.jmena.add(c.getString("Name") + " " + c.getString("Surname"));
@@ -188,9 +183,8 @@ public class SeznamActivity extends AppCompatActivity {
                         break;
                 }
 
-
             }
-
+            Log.d("delka zaplaceno", AkceActivity.zaplaceno.size() + "");
             customAdapter = new seznamAdapter(SeznamActivity.this, AkceActivity.jmena, AkceActivity.zaplaceno);
             seznamAkci.setAdapter(customAdapter);
         } catch (JSONException e) {
@@ -242,9 +236,8 @@ public class SeznamActivity extends AppCompatActivity {
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
 
-            case R.id.action_load:
-
-
+            case R.id.action_add_user:
+                addUserOnlyForThisEvent();
                 return true;
 
             default:
@@ -278,5 +271,6 @@ public class SeznamActivity extends AppCompatActivity {
         odesliData();
         super.onDestroy();
     }
+
 
 }

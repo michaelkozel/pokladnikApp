@@ -14,9 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * Created by vlooak on 12.8.15.
- */
+
 public class seznamAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -70,7 +68,6 @@ public class seznamAdapter extends ArrayAdapter<String> {
                 }
             }
         });
-
 
         if (names.get(position) == null) {
             tv_jmena.setText("Chyba");

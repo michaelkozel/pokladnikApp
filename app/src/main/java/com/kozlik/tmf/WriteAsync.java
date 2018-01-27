@@ -28,6 +28,10 @@ import java.util.List;
 /**
  * Created by michael on 8. 6. 2016.
  */
+
+/**
+ * Třída pro odeslání transakce příspěvku do pokladny
+ */
 public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
     public static String suma = "";
     public static String name = "";

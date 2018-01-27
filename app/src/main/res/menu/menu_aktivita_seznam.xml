@@ -4,5 +4,8 @@
 
     <!-- Settings, should always be in the overflow -->
 
-
+    <item
+        android:id="@+id/action_add_user"
+        android:title="Přidat člověka pro tuto akci"
+        app:showAsAction="never"/>
 </menu>

@@ -53,12 +53,37 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
-    public static TextView textview;
+
+    /**
+     * Tlačítko k odeslání transakce příspěvku na web
+     */
     Button send;
+    /**
+     * Textové pole pro počet peněz které uživatel zvolený ve spinneru přidává do pokladny
+     */
     EditText Eamount;
+    /**
+     * Textové pole pro komentář k příspěvku do pokladny
+     */
     EditText komentt;
-    TextView tv;
-    public String[] pname, psurname, pbalance, pjmeno;
+    /**
+     * //pole kde jsou jen jmena uzivatelu
+     */
+    public String[] pname,
+    /**
+     * //pole kde jsou jen prijmeni uzivatelu
+     */
+    psurname,
+    /**
+     * //pole kde jsou jen zustatky uzivatelu serazenych stejne jako pole se jmeny, prvni clen pole je zustatek prvniho clena pole s jmeny
+     */
+    pbalance;
+    /**
+     * pole se zustatkem uzivatelu, serazenych od prvniho po posledni, stejne jako pole se jmeny
+     */
+    /**
+     * Promenna jen pro log string radky se jmeny a balance vsech uzivatelu
+     */
     public static String radky = "";
     final private String[]
             NAMES = new String[]{
@@ -66,20 +91,21 @@ public class MainActivity extends AppCompatActivity {
             "Kozel", "Kubal", "Kyzlíková", "Lanz", "Lengál", "Lipavská", "Matějka", "Ondomiši",
             "Poláková", "Sláčal", "Sidorinová", "Švandelík", "Zasadil"};
     /**
-     * Spinner se jmenama tridy
+     * Spinner se jmenama zaku tridy
      */
     public static Spinner s;
-    Button viewTransactions;
-    Button exampleB;
+    /**
+     * listview s balace jednotlivych uzivatelu mimo placene akce
+     */
     ListView lv;
     invhelper customadapter;
     public static Boolean onlyaktualizovat;
     public static Boolean json_done;
     String pAmount = ""; //kolik je v pokladně
-    TextView tpAmount;
-    Button addEvent;
-    static List<String> akceList;
-    static List<String> idAkceList;
+    TextView tpAmount;   // kolik je v pokladně textview
+    Button addEvent;     // tlacitko pridat akci
+    static List<String> akceList;         // list s titulky akce
+    static List<String> idAkceList;      //list s id jednotlivych akci serazeny od prvni akce
     Button bt_zobrazAkce;
     /**
      * Titulek akce
@@ -150,12 +176,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         s.setAdapter(adapter);
-        exampleB = (Button) findViewById(R.id.exampleB);
         send = (Button) findViewById(R.id.button);
         addEvent = (Button) findViewById(R.id.button2);
         bt_zobrazAkce = (Button) findViewById(R.id.bt_akce);
-        viewTransactions = (Button) findViewById(R.id.transactions);
-        textview = (TextView) findViewById(R.id.text);
         Eamount = (EditText) findViewById(R.id.Eamount);
         komentt = (EditText) findViewById(R.id.koment);
 
@@ -163,13 +186,6 @@ public class MainActivity extends AppCompatActivity {
         onlyaktualizovat = false;
 
 
-        exampleB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent a = new Intent(MainActivity.this, Main2Activity.class);
-                startActivity(a);
-            }
-        });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -297,20 +313,6 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
-        viewTransactions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent i = new Intent(MainActivity.this, ViewTransactions.class);
-                String send = WriteAsync.kod;
-                i.putExtra("kod", send);
-                startActivity(i);
-
-
-            }
-        });
-
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,6 +348,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new GetJson().execute();
     }
 
     private void parseJSON(String parsedJSONString) {
@@ -467,7 +475,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -477,7 +484,6 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_load:
                 new GetJson().execute();
-
                 return true;
 
             default:
@@ -496,23 +502,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Třida pomoci ktere se dostává asynchronně json informace o lidech a jednotlivých zůstatcích v pokladně, v onPostExecute se vyplní
+     * textviev s částkou pokladny a listview s uživateli a zůstatky
+     */
     class GetJson extends AsyncTask<Void, Void, Boolean> {
+        /**
+         * pole stringu ve kterem je jmeno i prijmeni cloveka
+         */
         String[] pjmeno;
-        private ProgressDialog dialog;
 
 
         protected void onPreExecute() {
             Toast.makeText(getApplicationContext(), "Načítám data", Toast.LENGTH_SHORT).show();
-
-            pjmeno = new String[]{"Ahoj"};
-            pbalance = new String[]{"5"};
+            pjmeno = new String[]{""};
+            pbalance = new String[]{""};
         }
-
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-
             String source = "";
             URL url = null;
             try {
@@ -536,17 +544,14 @@ public class MainActivity extends AppCompatActivity {
 //users
                 // Getting JSON Array node
                 JSONArray users = jsonObj.getJSONArray("users");
-
                 pname = new String[users.length()];
                 psurname = new String[users.length()];
                 pbalance = new String[users.length()];
                 pjmeno = new String[users.length()];
                 for (int i = 0; i < users.length(); i++) {
-
                     JSONObject c = users.getJSONObject(i);
                     if (c.getString("surname").equals("Pokladna")) {
                         pAmount = c.getString("balance");
-
                     }
 
                     {
@@ -558,19 +563,13 @@ public class MainActivity extends AppCompatActivity {
 
                         pjmeno[i] = psurname[i] + " " + pname[i];
                         pbalance[i] = balance;
-                        System.out.println("jmeno " + pjmeno[i] + ":" + pbalance[i]);
                     }
-
                 }
-
-
 //transakce
 
                 url = new URL("http://tmf-u12.hys.cz/AndroidAppRequests/GetTransactions.php");
 
-
                 conn = url.openConnection();
-
                 in = new BufferedReader(new InputStreamReader(
                         conn.getInputStream()));
 
@@ -578,17 +577,14 @@ public class MainActivity extends AppCompatActivity {
                 while ((inputLine = in.readLine()) != null)
                     sb.append(inputLine + "\n");
                 in.close();
+                //substring pro odmazani reklamy
                 source = sb.toString();
-
                 kde = source.indexOf('{');
                 a = source.charAt(kde);
-                System.out.println("KDE Transakce" + a);
                 jsonObj = new JSONObject(source.substring(kde, source.length()));
                 System.out.println(source.substring(kde, source.length()));
-
                 radky = "";
                 JSONArray transactions = jsonObj.getJSONArray("transactions");
-
                 for (int i = 0; i < transactions.length(); i++) {
 
                     JSONObject c = transactions.getJSONObject(i);
@@ -598,11 +594,7 @@ public class MainActivity extends AppCompatActivity {
                         String Name = c.getString("Name");
                         String Amount = c.getString("Amount");
                         String Comment = c.getString("Comment");
-
                         radky += Name + " " + Amount + " " + Comment + "\n";
-                        System.out.println("transakce" + i + Name);
-
-                        System.out.println(radky);
                     }
 
                 }
@@ -630,21 +622,13 @@ public class MainActivity extends AppCompatActivity {
                 tpAmount.setText(pAmount);
 
             } else {
-
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "Data nebyla načtena, zkontrolujte připojení k internetu", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                Toast.makeText(getApplicationContext(), "Data nebyla načtena, zkontrolujte připojení k internetu", Toast.LENGTH_SHORT).show();
             }
 
             if (!result)
                 System.out.println("CHYBA");
-            MainActivity.json_done = true;
 
+            MainActivity.json_done = true;
 
         }
 

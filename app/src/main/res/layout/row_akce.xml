@@ -8,10 +8,10 @@
     android:weightSum="3">
 
     <TextView
-        android:layout_width="141dp"
-        android:layout_height="45dp"
-        android:text="Akce"
-        android:gravity="center"
         android:id="@+id/rowAkce"
-        android:layout_weight="1.5" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:text="Akce" />
 </LinearLayout>

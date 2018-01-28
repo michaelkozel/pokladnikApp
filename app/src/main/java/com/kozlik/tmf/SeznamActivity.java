@@ -73,12 +73,11 @@ public class SeznamActivity extends AppCompatActivity {
         String heslo = SP.getString("heslo", "xxx");
         getUsersForActionURL = webURL + "/AndroidAppRequests/getUsersForAction.php";
         URL_AddUserOnlyForThisAction = webURL + "/AndroidAppRequests/addUserForEvent.php";
-        URL_Pay = webURL+"/AndroidAppRequests/payForEvent.php";
+        URL_Pay = webURL + "/AndroidAppRequests/payForEvent.php";
 // barva status baru
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
-
     }
 
     private void addUserOnlyForThisEvent() {

@@ -61,17 +61,15 @@ public class invhelper extends ArrayAdapter<String> {
         } else {
             nazev2.setText(items2[position]);
         }
-
-
         System.out.println("item1 " + items1[position] + "item2 " + items2[position] + " " + position);
         if (Integer.parseInt(items2[position]) > 0)
             nazev2.setTextColor(context.getResources().getColor(R.color.green));
-        else {
-
+        else if (Integer.parseInt(items2[position]) == 0) {
+            nazev2.setTextColor(context.getResources().getColor(R.color.gray));
+        } else {
             nazev2.setTextColor(context.getResources().getColor(R.color.red));
-
         }
-Log.d("log",rowView.toString());
+        Log.d("log", rowView.toString());
         return rowView;
     }
 

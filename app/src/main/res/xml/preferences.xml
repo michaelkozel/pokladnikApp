@@ -2,8 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference android:title="Adresa webu"
         android:key="adress"
-        android:summary="Zadejte adresu na web"></EditTextPreference>
+        android:summary="Zadejte adresu na web ve tvaru http://adresa.cz/"></EditTextPreference>
     <EditTextPreference android:title="Admin heslo"
         android:key="heslo"
+        android:inputType="textPassword"
         android:summary="Zadejte heslo pro přístup k datům o placení"></EditTextPreference>
 </PreferenceScreen>

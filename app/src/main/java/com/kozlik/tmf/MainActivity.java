@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -103,9 +104,10 @@ public class MainActivity extends AppCompatActivity {
     static List<String> akceList;         // list s titulky akce
     static List<String> idAkceList;      //list s id jednotlivych akci serazeny od prvni akce
     Button bt_zobrazAkce;
-    SharedPreferences SP;
     static String webURL = ""; // Url na web
-    String heslo = ""; // admin heslo
+    static String heslo = ""; // admin heslo
+    SharedPreferences SP;
+    static boolean pristup = false;
     /**
      * Titulek akce
      */
@@ -197,40 +199,48 @@ public class MainActivity extends AppCompatActivity {
 
 
         addEvent.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog dialog = new DatePickerDialog(MainActivity.this,
-                        android.R.style.Theme_DeviceDefault_Light_Dialog,
-                        mDateSetListener, year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                dialog.show();
+                if (pristup) {
+                    Calendar cal = Calendar.getInstance();
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH);
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog dialog = new DatePickerDialog(MainActivity.this,
+                            android.R.style.Theme_DeviceDefault_Light_Dialog,
+                            mDateSetListener, year, month, day);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+                    dialog.show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Pravděpodobně špatné heslo", Toast.LENGTH_SHORT).show();
+                }
             }
+
         });
 
         bt_zobrazAkce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AsyncHttpClient client = new AsyncHttpClient();
-                client.get(adresaGetJSON, new TextHttpResponseHandler() {
-                    @Override
-                    public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                if (pristup) {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.get(adresaGetJSON, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onSuccess(int i, Header[] headers, String s) {
+                        @Override
+                        public void onSuccess(int i, Header[] headers, String s) {
 
-                        String parsedJSONString = parseTextToJSON(s);
-                        parseJSON(parsedJSONString);
+                            String parsedJSONString = parseTextToJSON(s);
+                            parseJSON(parsedJSONString);
 
-                    }
-
-
-                });
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "Pravděpodobně špatné heslo", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -411,7 +421,6 @@ public class MainActivity extends AppCompatActivity {
         String text = s.substring(zacatek, konec);
         Log.d("Main2Activity", text);
         return text;
-
     }
 
     private void postRequestAkce(String datum, String popis, String titulek, String castka) {
@@ -422,30 +431,33 @@ public class MainActivity extends AppCompatActivity {
         params.put("datum", datum);
         params.put("amountPost", castka);
         Log.d("params", params.toString());
+        if (pristup) {
+            client.post(AddActionURL, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onStart() {
+                    // called before request is started
+                }
 
-        client.post(AddActionURL, params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onStart() {
-                // called before request is started
-            }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                    // called when response HTTP status is "200 OK"
+                    Toast.makeText(MainActivity.this, "Success, akce přidána!" + statusCode, Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                // called when response HTTP status is "200 OK"
-                Toast.makeText(MainActivity.this, "Success, akce přidána!" + statusCode, Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                    Toast.makeText(MainActivity.this, "Fail " + statusCode, Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Toast.makeText(MainActivity.this, "Fail " + statusCode, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
-            }
-        });
+                @Override
+                public void onRetry(int retryNo) {
+                    // called when request is retried
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "Přístup odepřen, zkontrolujte heslo", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -546,8 +558,19 @@ public class MainActivity extends AppCompatActivity {
             try {
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 webURL = SP.getString("adress", "xxx");
+                heslo = SP.getString("heslo", "xxx");
                 url = new URL(webURL + "/AndroidAppRequests/GetJson.php");
                 URLConnection conn = url.openConnection();
+
+                String data = "heslo"  //post data
+                        + "=" + heslo;
+                // data += "&" + "surnamePost" + "=" + surname;
+
+
+                conn.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(data);
+                wr.flush();
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         conn.getInputStream()));
@@ -557,7 +580,10 @@ public class MainActivity extends AppCompatActivity {
                     sb.append(inputLine + "\n");
                 in.close();
                 source = sb.toString();
-
+                if (!source.contains("{")) {
+                    Log.d("getjson_source", source);
+                    return false;
+                }
                 int kde = source.indexOf('{');
                 char a = source.charAt(kde);
                 System.out.println("KDE" + a);
@@ -587,10 +613,8 @@ public class MainActivity extends AppCompatActivity {
                         pbalance[i] = balance;
                     }
                 }
-//transakce post request
-
+                //transakce post request k ziskani dat o transakcich (aktivita view transactions, nakonec nepouzivane)
                 url = new URL(MainActivity.webURL + "/AndroidAppRequests/GetTransactions.php");
-
                 conn = url.openConnection();
                 in = new BufferedReader(new InputStreamReader(
                         conn.getInputStream()));
@@ -608,17 +632,13 @@ public class MainActivity extends AppCompatActivity {
                 radky = "";
                 JSONArray transactions = jsonObj.getJSONArray("transactions");
                 for (int i = 0; i < transactions.length(); i++) {
-
                     JSONObject c = transactions.getJSONObject(i);
-
-
                     {
                         String Name = c.getString("Name");
                         String Amount = c.getString("Amount");
                         String Comment = c.getString("Comment");
                         radky += Name + " " + Amount + " " + Comment + "\n";
                     }
-
                 }
                 return true;
             } catch (JSONException e) {
@@ -640,22 +660,22 @@ public class MainActivity extends AppCompatActivity {
                     android.R.layout.simple_spinner_item, pjmeno);
             s.setAdapter(adapter);
             if (result) {
+                Toast.makeText(getApplicationContext(), "Data úspěšně stažena", Toast.LENGTH_SHORT).show();
                 customadapter = new invhelper(MainActivity.this, pjmeno, pbalance);
                 lv.setAdapter(customadapter);
                 customadapter.notifyDataSetChanged();
                 tpAmount.setText(pAmount);
-
+                pristup = true;
             } else {
-                Toast.makeText(getApplicationContext(), "Data nebyla načtena, zkontrolujte nastavení a připojení k internetu", Toast.LENGTH_SHORT).show();
+                pristup = false;
+                Toast.makeText(getApplicationContext(), "Data nebyla stažena, zkontrolujte nastavení a připojení k internetu", Toast.LENGTH_SHORT).show();
             }
-
             if (!result)
                 System.out.println("CHYBA");
 
             MainActivity.json_done = true;
 
         }
-
     }
 }
 

@@ -43,8 +43,8 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
     public static String kod = "";
     String text;
 
-    protected void onPreExecute() {
 
+    protected void onPreExecute() {
 
     }
 
@@ -74,7 +74,9 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
 
 
     protected void onPostExecute(Boolean result) {
+        if (result) {
 
+        }
 
     }
 
@@ -82,12 +84,13 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
     public void updatePOST() throws UnsupportedEncodingException {
 
 
+        String heslo = MainActivity.heslo;
         text = "";
         // Create data variable for sent values to server
 
         String data = "namePost"
                 + "=" + name;
-        data+="&" + "surnamePost" + "="
+        data += "&" + "surnamePost" + "="
                 + surname;
 
         data += "&" + "amountPost" + "="
@@ -98,10 +101,10 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
 
         data += "&" + "commentPost"
                 + "=" + Koment;
-
+        data += "&" + "heslo" + "=" + heslo;
+        Log.d("writeasyncHeslo", heslo);
 
         BufferedReader reader = null;
-
         // Send data
         try {
             // Defined URL  where to send data
@@ -128,13 +131,12 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
 
 
             text = sb.toString();
-            System.out.print("odezva" + text);
+            System.out.print("odezva: " + text);
         } catch (Exception ex) {
             System.out.println("spadlo to");
 
         } finally {
             try {
-
                 reader.close();
             } catch (Exception ex) {
 

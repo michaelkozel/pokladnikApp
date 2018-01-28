@@ -2,7 +2,9 @@ package com.kozlik.tmf;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -49,9 +51,9 @@ public class AkceActivity extends AppCompatActivity {
      */
     static ArrayList<Integer> zaplaceno;
     static String TAG = AkceActivity.class.getSimpleName();
-    String getUsersForActionURL = "http://tmf-u12.hys.cz/AndroidAppRequests/getUsersForAction.php";
-    String deleteEventURL = "http://tmf-u12.hys.cz/AndroidAppRequests/deleteEvent.php";
-    final String adresaGetJSON = "http://tmf-u12.hys.cz/AndroidAppRequests/GetJsonEvents.php";
+    String getUsersForActionURL = "";
+    String deleteEventURL = "";
+    String adresaGetJSON = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class AkceActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Akce");
         setSupportActionBar(toolbar);
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String webURL = SP.getString("adress", "xxx");
+        String heslo = SP.getString("heslo", "xxx");
+        getUsersForActionURL = webURL + "/AndroidAppRequests/getUsersForAction.php";
+        deleteEventURL = webURL + "/AndroidAppRequests/deleteEvent.php";
+        adresaGetJSON = webURL + "/AndroidAppRequests/GetJsonEvents.php";
         tv_Akce = (TextView) findViewById(R.id.tv_Akce);
         lv_akce = (ListView) findViewById(R.id.lv_akce);
         Intent i = this.getIntent();
@@ -115,7 +123,7 @@ public class AkceActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                 Toast.makeText(getApplicationContext(), "Success akce smazána", Toast.LENGTH_SHORT).show();
-                                Log.d("deleteResponse",responseString);
+                                Log.d("deleteResponse", responseString);
                                 aktualizujSeznam();
                             }
                         });

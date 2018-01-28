@@ -3,9 +3,11 @@ package com.kozlik.tmf;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -99,9 +101,8 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
 
         // Send data
         try {
-
             // Defined URL  where to send data
-            URL url = new URL("http://tmf-u12.hys.cz/AndroidAppRequests/NewTransaction.php");
+            URL url = new URL(MainActivity.webURL + "/AndroidAppRequests/NewTransaction.php");
 
             // Send POST data request
 
@@ -153,7 +154,7 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
         String source = "";
         URL url = null;
         try {
-            url = new URL("http://tmf-u12.hys.cz/ShowData.php");
+            url = new URL(MainActivity.webURL + "/ShowData.php");
             URLConnection conn = url.openConnection();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(

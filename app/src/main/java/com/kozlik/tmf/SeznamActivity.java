@@ -2,8 +2,10 @@ package com.kozlik.tmf;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -43,9 +45,9 @@ import cz.msebera.android.httpclient.Header;
  */
 public class SeznamActivity extends AppCompatActivity {
     ListView seznamAkci;
-    String URL = "http://tmf-u12.hys.cz/AndroidAppRequests/payForEvent.php";
-    String URL_AddUserOnlyForThisAction = "http://tmf-u12.hys.cz/AndroidAppRequests/addUserForEvent.php";
-    String getUsersForActionURL = "http://tmf-u12.hys.cz/AndroidAppRequests/getUsersForAction.php";
+    String URL_Pay = "";
+    String URL_AddUserOnlyForThisAction = "";
+    String getUsersForActionURL = "";
     FloatingActionButton fab_addUser;
     seznamAdapter customAdapter;
     /**
@@ -66,8 +68,12 @@ public class SeznamActivity extends AppCompatActivity {
         seznamAkci.setAdapter(customAdapter);
         id = getIntent().getStringExtra("nazevTabulky");
         Window window = this.getWindow();
-
-
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String webURL = SP.getString("adress", "xxx");
+        String heslo = SP.getString("heslo", "xxx");
+        getUsersForActionURL = webURL + "/AndroidAppRequests/getUsersForAction.php";
+        URL_AddUserOnlyForThisAction = webURL + "/AndroidAppRequests/addUserForEvent.php";
+        URL_Pay = webURL+"/AndroidAppRequests/payForEvent.php";
 // barva status baru
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
@@ -206,7 +212,7 @@ public class SeznamActivity extends AppCompatActivity {
         params.put("zaplaceno", json);
         params.put("tableName", id);
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(SeznamActivity.this, URL, params, new TextHttpResponseHandler() {
+        client.post(SeznamActivity.this, URL_Pay, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Toast.makeText(SeznamActivity.this, "Nepovedlo se zapsat", Toast.LENGTH_SHORT).show();

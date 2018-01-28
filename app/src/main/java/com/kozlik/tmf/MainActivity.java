@@ -2,14 +2,15 @@ package com.kozlik.tmf;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -85,11 +86,7 @@ public class MainActivity extends AppCompatActivity {
      * Promenna jen pro log string radky se jmeny a balance vsech uzivatelu
      */
     public static String radky = "";
-    final private String[]
-            NAMES = new String[]{
-            "AdamičkaMa", "AdamičkaMi", "Caha", "Cihlář", "Cuhrová", "Gogatishvili", "Haloda", "Hoang", "Hlinák", "Karlíček", "Knopp", "Kotlan",
-            "Kozel", "Kubal", "Kyzlíková", "Lanz", "Lengál", "Lipavská", "Matějka", "Ondomiši",
-            "Poláková", "Sláčal", "Sidorinová", "Švandelík", "Zasadil"};
+
     /**
      * Spinner se jmenama zaku tridy
      */
@@ -107,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
     static List<String> akceList;         // list s titulky akce
     static List<String> idAkceList;      //list s id jednotlivych akci serazeny od prvni akce
     Button bt_zobrazAkce;
+    SharedPreferences SP;
+    static String webURL = ""; // Url na web
+    String heslo = ""; // admin heslo
     /**
      * Titulek akce
      */
@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
      * Kolik se ma zaplatit
      */
     String castka = "";
-    final String AddActionURL = "http://tmf-u12.hys.cz/AndroidAppRequests/AddAction.php";
-    final String adresaGetJSON = "http://tmf-u12.hys.cz/AndroidAppRequests/GetJsonEvents.php";
+    String AddActionURL = "";
+    String adresaGetJSON = "";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private final int MY_PERMISSIONS_REQUEST_INTERNET = 1;
@@ -160,6 +160,21 @@ public class MainActivity extends AppCompatActivity {
                 // result of the request.
             }
         }
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        webURL = SP.getString("adress", "xxx");
+        heslo = SP.getString("heslo", "xxx");
+        if (webURL.contains("xxx")) {
+            Intent i = new Intent(this, MyPreferencesActivity.class);
+            Toast.makeText(this, "Nastavte adresu vaší stránky", Toast.LENGTH_SHORT).show();
+            startActivity(i);
+        } else {
+            SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            webURL = SP.getString("adress", "xxx");
+            heslo = SP.getString("heslo", "xxx");
+        }
+        AddActionURL = webURL + "/AndroidAppRequests/AddAction.php";
+        adresaGetJSON = webURL + "/AndroidAppRequests/GetJsonEvents.php";
+        Log.d("Mainactivity", "adresa " + webURL + " heslo " + heslo);
         onlyaktualizovat = true;
         new WriteAsync().execute();
 
@@ -171,11 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         s = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, NAMES);
 
-
-        s.setAdapter(adapter);
         send = (Button) findViewById(R.id.button);
         addEvent = (Button) findViewById(R.id.button2);
         bt_zobrazAkce = (Button) findViewById(R.id.bt_akce);
@@ -348,6 +359,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        webURL = SP.getString("adress", "");
+        heslo = SP.getString("heslo", "");
+        AddActionURL = webURL + "/AndroidAppRequests/AddAction.php";
+        adresaGetJSON = webURL + "/AndroidAppRequests/GetJsonEvents.php";
+
     }
 
     @Override
@@ -480,6 +497,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
+                Intent i = new Intent(this, MyPreferencesActivity.class);
+                startActivity(i);
                 return true;
 
             case R.id.action_load:
@@ -524,7 +543,9 @@ public class MainActivity extends AppCompatActivity {
             String source = "";
             URL url = null;
             try {
-                url = new URL("http://tmf-u12.hys.cz/AndroidAppRequests/GetJson.php");
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                webURL = SP.getString("adress", "xxx");
+                url = new URL(webURL + "/AndroidAppRequests/GetJson.php");
                 URLConnection conn = url.openConnection();
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -565,9 +586,9 @@ public class MainActivity extends AppCompatActivity {
                         pbalance[i] = balance;
                     }
                 }
-//transakce
+//transakce post request
 
-                url = new URL("http://tmf-u12.hys.cz/AndroidAppRequests/GetTransactions.php");
+                url = new URL(MainActivity.webURL + "/AndroidAppRequests/GetTransactions.php");
 
                 conn = url.openConnection();
                 in = new BufferedReader(new InputStreamReader(
@@ -614,7 +635,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                    android.R.layout.simple_spinner_item, pjmeno);
+            s.setAdapter(adapter);
             if (result) {
                 customadapter = new invhelper(MainActivity.this, pjmeno, pbalance);
                 lv.setAdapter(customadapter);

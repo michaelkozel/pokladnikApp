@@ -54,7 +54,6 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
-
     /**
      * Tlačítko k odeslání transakce příspěvku na web
      */
@@ -454,7 +453,9 @@ public class MainActivity extends AppCompatActivity {
 
         WriteAsync.Koment = komentt.getText().toString();
         WriteAsync.amount = Eamount.getText().toString();
-        WriteAsync.name = s.getSelectedItem().toString();
+        String jmeno[] = s.getSelectedItem().toString().split(" ");
+        WriteAsync.name = jmeno[1];
+        WriteAsync.surname = jmeno[0];
 
 
         if (TextUtils.isEmpty(WriteAsync.amount)) {
@@ -645,7 +646,7 @@ public class MainActivity extends AppCompatActivity {
                 tpAmount.setText(pAmount);
 
             } else {
-                Toast.makeText(getApplicationContext(), "Data nebyla načtena, zkontrolujte připojení k internetu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Data nebyla načtena, zkontrolujte nastavení a připojení k internetu", Toast.LENGTH_SHORT).show();
             }
 
             if (!result)

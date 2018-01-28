@@ -93,8 +93,6 @@ public class AkceActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
 
     private void smazatEvent(final int i) {
@@ -224,11 +222,13 @@ public class AkceActivity extends AppCompatActivity {
         try {
             JSONObject jsonObj = new JSONObject(parsedJSONString);
             JSONArray UsersForAction = jsonObj.getJSONArray("UsersForAction");
+            Log.d("jmena",UsersForAction.toString());
             jmena = new ArrayList<String>();
             zaplaceno = new ArrayList<Integer>();
             for (int i = 0; i < UsersForAction.length(); i++) {
                 JSONObject c = UsersForAction.getJSONObject(i);
                 jmena.add(c.getString("Name") + " " + c.getString("Surname"));
+                Log.d("jmena",c.getString("Name") + " " + c.getString("Surname"));
                 int zaplatil = c.getInt("Zaplaceno");
                 switch (zaplatil) {
                     case 0:

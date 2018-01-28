@@ -37,6 +37,7 @@ import java.util.List;
 public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
     public static String suma = "";
     public static String name = "";
+    public static String surname = "";
     public static String amount = "";
     public static String Koment = "";
     public static String kod = "";
@@ -86,6 +87,8 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
 
         String data = "namePost"
                 + "=" + name;
+        data+="&" + "surnamePost" + "="
+                + surname;
 
         data += "&" + "amountPost" + "="
                 + amount;

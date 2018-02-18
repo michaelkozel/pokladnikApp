@@ -55,8 +55,6 @@ public class WriteAsync extends AsyncTask<Void, Void, Boolean> {
             if (MainActivity.onlyaktualizovat) {
                 kod = ShowTransactions();
             } else {
-
-
                 updatePOST();
                 kod = ShowTransactions();
             }

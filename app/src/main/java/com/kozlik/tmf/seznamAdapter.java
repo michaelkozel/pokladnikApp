@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-
+/**
+ * Adapter pro listview o jednotlive akci se zaky a checkboxy o zaplaceni
+ */
 public class seznamAdapter extends ArrayAdapter<String> {
 
     private final Activity context;

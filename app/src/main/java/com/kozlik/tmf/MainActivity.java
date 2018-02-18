@@ -31,16 +31,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
      * listview s balace jednotlivych uzivatelu mimo placene akce
      */
     ListView lv;
-    invhelper customadapter;
+    ListAdapter customadapter;
     public static Boolean onlyaktualizovat;
     public static Boolean json_done;
     String pAmount = ""; //kolik je v pokladně
@@ -140,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
-
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                     Manifest.permission.INTERNET)) {
@@ -151,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_INTERNET);
@@ -465,10 +460,16 @@ public class MainActivity extends AppCompatActivity {
 
         WriteAsync.Koment = komentt.getText().toString();
         WriteAsync.amount = Eamount.getText().toString();
-        String jmeno[] = s.getSelectedItem().toString().split(" ");
-        WriteAsync.name = jmeno[1];
-        WriteAsync.surname = jmeno[0];
-
+       try {
+           String jmeno[] = s.getSelectedItem().toString().split(" ");
+           WriteAsync.name = jmeno[1];
+           WriteAsync.surname = jmeno[0];
+       }
+       catch (IndexOutOfBoundsException e)
+       {
+           WriteAsync.name = "";
+           WriteAsync.surname = "";
+       }
 
         if (TextUtils.isEmpty(WriteAsync.amount)) {
             Eamount.setError("Prázdné");
@@ -661,7 +662,7 @@ public class MainActivity extends AppCompatActivity {
             s.setAdapter(adapter);
             if (result) {
                 Toast.makeText(getApplicationContext(), "Data úspěšně stažena", Toast.LENGTH_SHORT).show();
-                customadapter = new invhelper(MainActivity.this, pjmeno, pbalance);
+                customadapter = new ListAdapter(MainActivity.this, pjmeno, pbalance);
                 lv.setAdapter(customadapter);
                 customadapter.notifyDataSetChanged();
                 tpAmount.setText(pAmount);

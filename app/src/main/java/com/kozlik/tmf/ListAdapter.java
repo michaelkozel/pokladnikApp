@@ -23,15 +23,15 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class invhelper extends ArrayAdapter<String> {
+public class ListAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] items1, items2;
 
     private final Context c;
 
-    public invhelper(Activity context,
-                     String[] items1, String[] items2) {
+    public ListAdapter(Activity context,
+                       String[] items1, String[] items2) {
         super(context, R.layout.rowlayout, items1);
         this.context = context;
         this.items1 = items1;

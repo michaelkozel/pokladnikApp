@@ -15,7 +15,9 @@ import android.widget.Toast;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
-
+/**
+ * Trida zobrazujici transakce, nakonec nepouzita v UI
+ */
 public class ViewTransactions extends AppCompatActivity {
     public static TextView tv ;
     ListView listTrans;

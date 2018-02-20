@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
     Button bt_zobrazAkce;
     static String webURL = ""; // Url na web
     static String heslo = ""; // admin heslo
+    /**
+     * Promenna pro ulozeni nastaveni
+     */
     SharedPreferences SP;
     static boolean pristup = false;
     /**

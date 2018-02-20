@@ -410,6 +410,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Metoda pro dostání surového JSON textu, z důvodu reklamy ve formě citátu
+     * @param s nezformátovaný text
+     * @return JSON string, který už jde zformátovat javovskými třídami pro JSON
+     */
     private String parseTextToJSON(String s) {
         int zacatek = s.indexOf("{");
         int konec = s.length();

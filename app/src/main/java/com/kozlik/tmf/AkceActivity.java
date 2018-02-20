@@ -170,7 +170,7 @@ public class AkceActivity extends AppCompatActivity {
         titleAkceZobrazen = MainActivity.akceList.get(i);
         Log.d("nazevTabulky", nazevTabulky);
         //  Toast.makeText(getApplication(), nazevTabulky, Toast.LENGTH_SHORT).show();
-        RequestParams params = new RequestParams("titulek", nazevTabulky);
+        RequestParams params = new RequestParams("id", nazevTabulky);
         client.post(getUsersForActionURL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

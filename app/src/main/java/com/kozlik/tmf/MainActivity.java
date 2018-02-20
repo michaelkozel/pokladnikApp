@@ -31,13 +31,16 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -98,8 +101,18 @@ public class MainActivity extends AppCompatActivity {
     String pAmount = ""; //kolik je v pokladně
     TextView tpAmount;   // kolik je v pokladně textview
     Button addEvent;     // tlacitko pridat akci
-    static List<String> akceList;         // list s titulky akce
-    static List<String> idAkceList;      //list s id jednotlivych akci serazeny od prvni akce
+    /**
+     * list s popisy akce
+     */
+    static List<String> akceList;
+    /**
+     * list s id jednotlivych akci serazeny od prvni akce
+     */
+    static List<String> idAkceList;
+    /**
+     * list s titulky jednotlivych akci serazeny od prvni akce
+     */
+    static List<String> titulekList;
     Button bt_zobrazAkce;
     static String webURL = ""; // Url na web
     static String heslo = ""; // admin heslo
@@ -124,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
     String AddActionURL = "";
     String adresaGetJSON = "";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-
     private final int MY_PERMISSIONS_REQUEST_INTERNET = 1;
 
     //todo add titulek
@@ -380,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
     private void parseJSON(String parsedJSONString) {
         String textInTextview = "";
         akceList = new ArrayList<String>();
+        titulekList= new ArrayList<String>();
         idAkceList = new ArrayList<String>();
         try {
             JSONObject jsonObj = new JSONObject(parsedJSONString);
@@ -393,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                 String titulek = c.getString("titulek");
                 String id = c.getString("id");
                 String poleDatum[] = datum.split("-");
-
+                titulekList.add(titulek);
                 akceList.add(poleDatum[2] + " ." + poleDatum[1] + " ." + poleDatum[0] + " " + popis + " " + cena);
                 Log.d("titulekmainactivity", id);
                 idAkceList.add(id);
@@ -412,6 +425,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Metoda pro dostání surového JSON textu, z důvodu reklamy ve formě citátu
+     *
      * @param s nezformátovaný text
      * @return JSON string, který už jde zformátovat javovskými třídami pro JSON
      */
@@ -465,16 +479,14 @@ public class MainActivity extends AppCompatActivity {
 
         WriteAsync.Koment = komentt.getText().toString();
         WriteAsync.amount = Eamount.getText().toString();
-       try {
-           String jmeno[] = s.getSelectedItem().toString().split(" ");
-           WriteAsync.name = jmeno[1];
-           WriteAsync.surname = jmeno[0];
-       }
-       catch (IndexOutOfBoundsException e)
-       {
-           WriteAsync.name = "";
-           WriteAsync.surname = "";
-       }
+        try {
+            String jmeno[] = s.getSelectedItem().toString().split(" ");
+            WriteAsync.name = jmeno[1];
+            WriteAsync.surname = jmeno[0];
+        } catch (IndexOutOfBoundsException e) {
+            WriteAsync.name = "";
+            WriteAsync.surname = "";
+        }
 
         if (TextUtils.isEmpty(WriteAsync.amount)) {
             Eamount.setError("Prázdné");
